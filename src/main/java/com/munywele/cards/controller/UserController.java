@@ -1,28 +1,49 @@
 package com.munywele.cards.controller;
 
+import com.munywele.cards.dto.LoginResponse;
+import com.munywele.cards.dto.LoginRequest;
 import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("api/v1/user")
+@RequestMapping("api/v1/users")
 @RestController
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<List<UserEntity>> authUser() {
+    public ResponseEntity<LoginResponse> authUser(
+            @Valid @RequestBody LoginRequest userRequest,
+            HttpServletRequest request
+    ) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword())
+        );
+
+        LoginResponse users = userService.authUser(authentication,userRequest);
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserEntity>> listUsers() {
         List<UserEntity> users = userService.getUsers();
         return ResponseEntity.ok(users);
     }
