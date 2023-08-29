@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DatabaseMigrationSettings">
+  <component name="DatabaseMigrationSettings" isCreateRollback="true" lastSelectedDirectory="migrations/changelog/#date(&quot;yyyy&quot;)/#date(&quot;MM&quot;)" mainChangeLogDir="migrations/changelog/#date(&quot;yyyy&quot;)/#date(&quot;MM&quot;)">
     <database-infos>
       <database-info>
         <option name="enabled" value="true" />
