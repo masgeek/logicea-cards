@@ -6,7 +6,3 @@ spring:
     database-change-log-lock-table: cards_migration_lock
     clear-checksums: ${CLEAR_CHECKSUM:false}
     rollback-file: log/cards.rollback.sql
-
-  jpa:
-    hibernate:
-      ddl-auto: create
