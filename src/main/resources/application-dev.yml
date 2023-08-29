@@ -1,0 +1,12 @@
+spring:
+  liquibase:
+    enabled: true
+    change-log: "classpath:/migrations/changelog.xml"
+    database-change-log-table: cards_migration
+    database-change-log-lock-table: cards_migration_lock
+    clear-checksums: ${CLEAR_CHECKSUM:false}
+    rollback-file: log/cards.rollback.sql
+
+  jpa:
+    hibernate:
+      ddl-auto: create
