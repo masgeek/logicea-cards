@@ -28,6 +28,9 @@ spring:
   liquibase:
     enabled: false
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 cards:
   time-zone: ${APP_TIMEZONE:+03:00}
 
