@@ -3,11 +3,8 @@ package com.munywele.cards.service;
 import com.munywele.cards.dto.LoginResponse;
 import com.munywele.cards.dto.UserDto;
 import com.munywele.cards.model.UserEntity;
-import com.munywele.cards.model.UserTokenEntity;
 import com.munywele.cards.repository.UserRepository;
-import com.munywele.cards.repository.UserTokenRepository;
 import com.munywele.cards.utils.JwtUtils;
-import com.munywele.cards.utils.RefreshToken;
 import com.munywele.cards.utils.UserDetailsImpl;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -22,9 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,7 +29,6 @@ public class UserService implements UserDetailsService {
     private String timeZone = null;
     private final UserRepository userRepo;
 
-    private final UserTokenRepository userTokenRepo;
 
     private final JwtUtils jwtUtils;
 
@@ -43,9 +37,8 @@ public class UserService implements UserDetailsService {
     ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
-    public UserService(UserRepository userRepo, UserTokenRepository userTokenRepo, JwtUtils jwtUtils) {
+    public UserService(UserRepository userRepo,  JwtUtils jwtUtils) {
         this.userRepo = userRepo;
-        this.userTokenRepo = userTokenRepo;
         this.jwtUtils = jwtUtils;
     }
 
