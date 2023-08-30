@@ -22,10 +22,10 @@ public class CardResponse {
     private UserResponse cardOwner;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;

@@ -1,5 +1,6 @@
 package com.munywele.cards.service;
 
+import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
 import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.dto.UserResponse;
@@ -37,9 +38,16 @@ public class CardService {
 
     public CardResponse getSingleCard(Long cardId, HttpServletRequest request) throws Exception {
         Long userid = getAuthenticatedUserId(request);
-
-        CardEntity card = cardRepo.findById(cardId).orElseThrow(() -> new Exception("Card not dound"));
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userid).orElseThrow(() -> new Exception("Card not found"));
         return modelMapper.map(card, CardResponse.class);
+    }
+
+    public CardResponse updateCard(Long cardId, CardUpdateRequest cardUpdateRequest, HttpServletRequest request) throws Exception {
+        Long userid = getAuthenticatedUserId(request);
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userid).orElseThrow(() -> new Exception("Card not found"));
+        modelMapper.map(cardUpdateRequest, card);
+        CardEntity saved = cardRepo.save(card);
+        return modelMapper.map(saved, CardResponse.class);
     }
 
     public Page<CardResponse> listAllCards(Pageable pageable, HttpServletRequest request) {
@@ -73,6 +81,12 @@ public class CardService {
         return modelMapper.map(savedCard, CardResponse.class);
     }
 
+    public void deleteCard(Long cardId, HttpServletRequest request) throws Exception {
+        Long userid = getAuthenticatedUserId(request);
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userid).orElseThrow(() -> new Exception("Card not found"));
+        cardRepo.delete(card);
+    }
+
 
     private CardResponse convertToCardResponse(CardEntity cardEntity) {
         return modelMapper.map(cardEntity, CardResponse.class);
@@ -82,4 +96,5 @@ public class CardService {
         String jwtToken = jwtUtils.parseJwtFromHeader(request);
         return jwtUtils.getClaim(jwtToken, EnumJwtClaims.USER_ID).asLong();
     }
+
 }

@@ -10,7 +10,7 @@ public class ColorValidator {
     }
 
     public static boolean isValidHexColor(String hexColor) {
-        if (hexColor == null) {
+        if (hexColor == null || hexColor.isEmpty()) {
             return false;
         }
         // Regular expression for validating hex color codes with a maximum length of 8

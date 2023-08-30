@@ -1,5 +1,6 @@
 package com.munywele.cards.controller;
 
+import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
 import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.service.CardService;
@@ -24,8 +25,15 @@ public class CardController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
-    public ResponseEntity<CardResponse> singleCard(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<CardResponse> singleCard(@PathVariable Long id, HttpServletRequest request) throws Exception {
         CardResponse cardResponses = cardService.getSingleCard(id, request);
+        return ResponseEntity.ok(cardResponses);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+    public ResponseEntity<CardResponse> updateCard(@PathVariable Long id, @Valid @RequestBody CardUpdateRequest cardUpdateRequest, HttpServletRequest request) throws Exception {
+        CardResponse cardResponses = cardService.updateCard(id, cardUpdateRequest, request);
         return ResponseEntity.ok(cardResponses);
     }
 
@@ -41,4 +49,12 @@ public class CardController {
         CardResponse cardResponses = cardService.addCard(newCardRequest, request);
         return ResponseEntity.ok(cardResponses);
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+    public ResponseEntity<Object> updateCard(@PathVariable Long id, HttpServletRequest request) throws Exception {
+        cardService.deleteCard(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
 }
