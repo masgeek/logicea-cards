@@ -15,6 +15,12 @@
                 <constraints nullable="false" unique="true" uniqueConstraintName="uk-user-email"/>
             </column>
 
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="varchar(80)"/>
+
             <column name="user_role" type="varchar(11)">
                 <constraints nullable="false"/>
             </column>
