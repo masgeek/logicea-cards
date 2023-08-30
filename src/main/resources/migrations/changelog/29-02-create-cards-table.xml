@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="29-02" author="masgeek">
+        <createTable tableName="cards">
+
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk-user-id"
+                             nullable="false" deleteCascade="false"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="card_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="card_color" type="varchar(8)"/>
+
+            <column name="card_status" type="varchar(15)" defaultValue="TODO">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="card_description" type="text"/>
+
+            <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+        </createTable>
+
+        <modifySql>
+            <append value=" engine innodb charset=utf8mb4 collate utf8mb4_unicode_ci"/>
+        </modifySql>
+
+    </changeSet>
+</databaseChangeLog>

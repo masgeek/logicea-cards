@@ -1,0 +1,49 @@
+server:
+  port: ${PORT_NUMBER:8080}
+  error:
+    whitelabel:
+      enabled: false
+#    include-message: always
+#    include-stacktrace: always
+#    include-exception: true
+
+
+spring:
+  main:
+    banner-mode: console
+    log-startup-info: true
+
+  application:
+    name: cards-api-service
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/cards}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:}
+
+  liquibase:
+    enabled: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
+
+
+cards:
+  time-zone: ${APP_TIMEZONE:+03:00}
+  version: 1.0.0
+  name: Cards Management API
+  dev-email: dev@logicea.com
+  company: Logicea
+  doc-site: #
+  license: GPL
+
+jwt:
+  secret: ${JWT_SECRET:changeme}
+  token-validity: ${JWT_SECONDS_DURATION:18000} #validity in seconds
+  issuer: ${JWT_ISSUER:cards}

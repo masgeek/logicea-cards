@@ -1,3 +1,1 @@
 rootProject.name = 'cards'
-
-include("migrations", "migrations", "api")
