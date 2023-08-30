@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
+@ActiveProfiles("junit")
 @Rollback(false)
 class UserEntityRoleRepositoryTest {
 
