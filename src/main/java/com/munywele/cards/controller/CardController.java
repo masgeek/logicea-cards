@@ -22,16 +22,23 @@ public class CardController {
         this.cardService = cardService;
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+    public ResponseEntity<CardResponse> singleCard(@PathVariable Long id, HttpServletRequest request) {
+        CardResponse cardResponses = cardService.getSingleCard(id, request);
+        return ResponseEntity.ok(cardResponses);
+    }
+
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Page<CardResponse>> listCards(Pageable pageable) {
-        Page<CardResponse> cardResponses = cardService.listAllCards(pageable);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+    public ResponseEntity<Page<CardResponse>> listCards(Pageable pageable, HttpServletRequest request) {
+        Page<CardResponse> cardResponses = cardService.listAllCards(pageable, request);
         return ResponseEntity.ok(cardResponses);
     }
 
     @PostMapping
     public ResponseEntity<CardResponse> addNewCard(@Valid @RequestBody NewCardRequest newCardRequest, HttpServletRequest request) {
-        CardResponse cardResponses = cardService.addCard(newCardRequest,request);
+        CardResponse cardResponses = cardService.addCard(newCardRequest, request);
         return ResponseEntity.ok(cardResponses);
     }
 }

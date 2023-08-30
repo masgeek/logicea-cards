@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserResponse>> listUsers() {
         List<UserResponse> users = userService.getUsers();
         return ResponseEntity.ok(users);

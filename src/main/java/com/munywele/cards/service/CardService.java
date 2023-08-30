@@ -5,6 +5,7 @@ import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.dto.UserResponse;
 import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.enums.EnumJwtClaims;
+import com.munywele.cards.enums.EnumUserRole;
 import com.munywele.cards.model.CardEntity;
 import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.repository.CardRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,18 +35,32 @@ public class CardService {
         this.jwtUtils = jwtUtils;
     }
 
-    public Page<CardResponse> listAllCards(Pageable pageable) {
+    public CardResponse getSingleCard(Long cardId, HttpServletRequest request) throws Exception {
+        Long userid = getAuthenticatedUserId(request);
 
-        Page<CardEntity> cardEntities = cardRepo.findAll(pageable);
+        CardEntity card = cardRepo.findById(cardId).orElseThrow(() -> new Exception("Card not dound"));
+        return modelMapper.map(card, CardResponse.class);
+    }
+
+    public Page<CardResponse> listAllCards(Pageable pageable, HttpServletRequest request) {
+        Page<CardEntity> cardEntities = null;
+        //check user role
+        String jwtToken = jwtUtils.parseJwtFromHeader(request);
+        Long userid = getAuthenticatedUserId(request);
+        String role = jwtUtils.getClaim(jwtToken, EnumJwtClaims.ROLE).asString();
+
+        if (Objects.equals(role, EnumUserRole.MEMBER.getRoleName())) {
+            //filter out cards using the user id
+            cardEntities = cardRepo.findAllByUserId(userid, pageable);
+        } else {
+            cardEntities = cardRepo.findAll(pageable);
+        }
         return cardEntities.map(this::convertToCardResponse);
 
     }
 
     public CardResponse addCard(NewCardRequest newCardRequest, HttpServletRequest request) {
-
-        String jwtToken = jwtUtils.parseJwtFromHeader(request);
-        Long userId = jwtUtils.getClaim(jwtToken, EnumJwtClaims.USER_ID).asLong();
-
+        Long userId = getAuthenticatedUserId(request);
 
         CardEntity cardEntity = modelMapper.map(newCardRequest, CardEntity.class);
 
@@ -59,15 +75,11 @@ public class CardService {
 
 
     private CardResponse convertToCardResponse(CardEntity cardEntity) {
-        CardResponse response = modelMapper.map(cardEntity, CardResponse.class);
-
-
-        Optional<UserEntity> userEntity = userRepo.findById(cardEntity.getUserId());
-        if (userEntity.isPresent()) {
-            response.setCardOwner(modelMapper.map(userEntity, UserResponse.class));
-        }
-
-        return response;
+        return modelMapper.map(cardEntity, CardResponse.class);
     }
 
+    private Long getAuthenticatedUserId(HttpServletRequest request) {
+        String jwtToken = jwtUtils.parseJwtFromHeader(request);
+        return jwtUtils.getClaim(jwtToken, EnumJwtClaims.USER_ID).asLong();
+    }
 }
