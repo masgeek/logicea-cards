@@ -1,6 +1,7 @@
 package com.munywele.cards.service;
 
 import com.munywele.cards.dto.LoginResponse;
+import com.munywele.cards.dto.UserDto;
 import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.model.UserTokenEntity;
 import com.munywele.cards.repository.UserRepository;
@@ -8,6 +9,7 @@ import com.munywele.cards.repository.UserTokenRepository;
 import com.munywele.cards.utils.JwtUtils;
 import com.munywele.cards.utils.RefreshToken;
 import com.munywele.cards.utils.UserDetailsImpl;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class UserService implements UserDetailsService {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    ModelMapper modelMapper = new ModelMapper();
+
     @Autowired
     public UserService(UserRepository userRepo, UserTokenRepository userTokenRepo, JwtUtils jwtUtils) {
         this.userRepo = userRepo;
@@ -46,8 +50,15 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<UserEntity> getUsers() {
-        return userRepo.findAll();
+    public List<UserDto> getUsers() {
+        List<UserEntity> users = userRepo.findAll();
+
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (UserEntity user : users) {
+            UserDto userDto = modelMapper.map(user, UserDto.class);
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 
     @Override
