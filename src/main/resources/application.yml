@@ -27,3 +27,11 @@ spring:
 
   liquibase:
     enabled: false
+
+cards:
+  time-zone: "+00:00"
+
+jwt:
+  secret: changeme
+  token-validity: 50
+  issuer: cards

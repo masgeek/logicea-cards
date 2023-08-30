@@ -2,7 +2,6 @@ package com.munywele.cards.utils;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.munywele.cards.enums.EnumJwtClaims;
-import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -39,7 +37,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = decodedJWT.getClaim(EnumJwtClaims.USERNAME.name()).asString();
                 UserDetails user = userService.loadUserByUsername(username);
                 if (jwtUtils.validateToken(request, user)) {
-                    String id = decodedJWT.getClaim(EnumJwtClaims.ID.name()).asString();
+                    String id = decodedJWT.getClaim(EnumJwtClaims.USER_ID.name()).asString();
 
                     Set<? extends GrantedAuthority> authSet = new HashSet<>(user.getAuthorities());
 

@@ -29,17 +29,12 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<LoginResponse> authUser(
-            @Valid @RequestBody LoginRequest userRequest,
-            HttpServletRequest request
-    ) {
+    public ResponseEntity<LoginResponse> authUser(@Valid @RequestBody LoginRequest userRequest, HttpServletRequest request) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword())
-        );
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
 
-        LoginResponse users = userService.authUser(authentication,userRequest);
-        return ResponseEntity.ok(users);
+        LoginResponse loginResponse = userService.authUser(authentication);
+        return ResponseEntity.ok(loginResponse);
     }
 
     @GetMapping

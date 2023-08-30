@@ -12,21 +12,25 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
+@Component
 public class JwtUtils {
     private final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${fuelrod.time-zone}")
-    private String timeZone = "UTC";
+    @Value("${cards.time-zone}")
+    private String timeZone = null;
 
     @Value("${jwt.secret}")
     private String secret = null;
@@ -37,13 +41,21 @@ public class JwtUtils {
     @Value("${jwt.issuer}")
     private String issuer = null;
 
-    private SecureRandom secureRandom = new SecureRandom();
+    private final SecureRandom secureRandom = new SecureRandom();
 
-    public String createToken(String username, String refreshTokenId) throws JWTCreationException {
+    public String createToken(UserEntity userEntity) throws JWTCreationException {
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        return JWT.create().withSubject(username).withClaim(EnumJwtClaims.USERNAME.name(), username).withClaim(EnumJwtClaims.ID.name(), refreshTokenId).withIssuer(issuer).withAudience(username).withExpiresAt(getExpirationDate(tokenValidity)).sign(algorithm);
+        return JWT.create()
+                .withSubject(userEntity.getUserEmail())
+                .withClaim(EnumJwtClaims.USERNAME.name(), userEntity.getUserEmail())
+                .withClaim(EnumJwtClaims.ROLE.name(), userEntity.getUserRole().getRoleName())
+                .withClaim(EnumJwtClaims.USER_ID.name(), userEntity.getId())
+                .withIssuer(issuer)
+                .withAudience(userEntity.getUserEmail())
+                .withExpiresAt(getExpirationDate(tokenValidity))
+                .sign(algorithm);
 
 
     }
@@ -61,6 +73,15 @@ public class JwtUtils {
             return verify(jwt);
         }
         return null;
+    }
+
+    public RefreshToken createRefreshToken(String username) {
+        byte[] bytes = new byte[64];
+        secureRandom.nextBytes(bytes);
+        String token = Base64.getEncoder().encodeToString(bytes);
+        LocalDateTime expiryDate = LocalDateTime.ofInstant(Instant.now().plusSeconds(tokenValidity), ZoneId.of(timeZone));
+
+        return new RefreshToken(username, token, expiryDate);
     }
 
     private DecodedJWT verify(String token) throws JWTVerificationException {
@@ -108,5 +129,9 @@ public class JwtUtils {
             return decodedJWT.getExpiresAt();
         }
         return new Date();
+    }
+
+    public boolean isRefreshTokenExpired(LocalDateTime expiryDate) {
+        return expiryDate.isBefore(LocalDateTime.now());
     }
 }
