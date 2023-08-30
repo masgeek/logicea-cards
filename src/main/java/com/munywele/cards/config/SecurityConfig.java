@@ -26,7 +26,23 @@ public class SecurityConfig {
     private final AuthEntryPoint unauthorizedHandler;
 
 
-    private UserService userService;
+    private final UserService userService;
+
+    /*
+    "/api/v1/users/auth", "/actuator",
+                                "/swagger-ui.html", "/swagger-ui/**", "/v2/api-docs"
+     */
+    private static final String[] AUTH_WHITE_LIST = {
+            "/api/v1/users/auth",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/api-docs/**",
+            "/swagger-resources/**",
+            "/error"
+    };
 
     public SecurityConfig(AuthEntryPoint unauthorizedHandler, UserService userService) {
         this.unauthorizedHandler = unauthorizedHandler;
@@ -64,7 +80,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(csrf -> csrf.disable()).authorizeHttpRequests(requests ->
-                requests.requestMatchers("/api/v1/users/auth").permitAll()
+                requests.requestMatchers(AUTH_WHITE_LIST)
+                        .permitAll()
                         .anyRequest()
                         .authenticated());
 
