@@ -29,9 +29,9 @@ spring:
     enabled: false
 
 cards:
-  time-zone: "+00:00"
+  time-zone: ${APP_TIMEZONE:+03:00}
 
 jwt:
-  secret: changeme
-  token-validity: 50
-  issuer: cards
+  secret: ${JWT_SECRET:changeme}
+  token-validity: ${JWT_SECONDS_DURATION:60} #validity in seconds
+  issuer: ${JWT_ISSUER:cards}

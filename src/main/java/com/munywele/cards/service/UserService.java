@@ -11,6 +11,7 @@ import com.munywele.cards.utils.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,12 +20,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
 
+    @Value("${cards.time-zone}")
+    private String timeZone = null;
     private final UserRepository userRepo;
 
     private final UserTokenRepository userTokenRepo;
@@ -61,30 +66,10 @@ public class UserService implements UserDetailsService {
     public LoginResponse authUser(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        boolean isTokenExpired = true;
 
-        UserTokenEntity userTokenEntity = userTokenRepo.findByUserEmail(userDetails.getUsername());
         UserEntity userEntity = userRepo.findByUserEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-
-        RefreshToken refreshToken = jwtUtils.createRefreshToken(userDetails.getUsername());
-
-        if (userTokenEntity == null) {
-            userTokenEntity = new UserTokenEntity();
-            userTokenEntity.setUserEmail(refreshToken.getUsername());
-        } else {
-            isTokenExpired = jwtUtils.isRefreshTokenExpired(userTokenEntity.getExpiryDate());
-        }
-
-        if (isTokenExpired) {
-            logger.info("Refresh token has expired, generating new token");
-            userTokenEntity.setToken(refreshToken.getToken());
-            userTokenEntity.setExpiryDate(refreshToken.getExpiryDate());
-        }
-        UserTokenEntity resp = userTokenRepo.save(userTokenEntity);
         String bearerToken = jwtUtils.createToken(userEntity);
-
-
-        return new LoginResponse(bearerToken,resp.getExpiryDate());
+        return new LoginResponse(bearerToken);
 
     }
 }

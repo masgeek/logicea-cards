@@ -12,18 +12,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public class JwtUtils {
@@ -47,17 +45,21 @@ public class JwtUtils {
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
+        Date expirationDate = computeDate(tokenValidity);
+        Date notBeforeDate = computeDate(0L);
+
         return JWT.create()
-                .withSubject(userEntity.getUserEmail())
+                .withSubject("Card user details")
                 .withClaim(EnumJwtClaims.USERNAME.name(), userEntity.getUserEmail())
                 .withClaim(EnumJwtClaims.ROLE.name(), userEntity.getUserRole().getRoleName())
                 .withClaim(EnumJwtClaims.USER_ID.name(), userEntity.getId())
                 .withIssuer(issuer)
+                .withJWTId(UUID.randomUUID().toString())
                 .withAudience(userEntity.getUserEmail())
-                .withExpiresAt(getExpirationDate(tokenValidity))
+                .withExpiresAt(expirationDate)
+                .withNotBefore(notBeforeDate)
+                .withIssuedAt(new Date())
                 .sign(algorithm);
-
-
     }
 
     public boolean validateToken(HttpServletRequest request, UserDetails user) {
@@ -75,14 +77,6 @@ public class JwtUtils {
         return null;
     }
 
-    public RefreshToken createRefreshToken(String username) {
-        byte[] bytes = new byte[64];
-        secureRandom.nextBytes(bytes);
-        String token = Base64.getEncoder().encodeToString(bytes);
-        LocalDateTime expiryDate = LocalDateTime.ofInstant(Instant.now().plusSeconds(tokenValidity), ZoneId.of(timeZone));
-
-        return new RefreshToken(username, token, expiryDate);
-    }
 
     private DecodedJWT verify(String token) throws JWTVerificationException {
         try {
@@ -103,8 +97,8 @@ public class JwtUtils {
         return null;
     }
 
-    private Date getExpirationDate(Long expirationInSeconds) {
-        LocalDateTime localDate = LocalDateTime.now().plusSeconds(expirationInSeconds);
+    private Date computeDate(Long secondsToAdd) {
+        LocalDateTime localDate = LocalDateTime.now().plusSeconds(secondsToAdd);
         return Date.from(localDate.atZone(ZoneId.of(timeZone)).toInstant());
     }
 
@@ -123,15 +117,11 @@ public class JwtUtils {
         return expiration.before(new Date());
     }
 
-    private Date getExpirationDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) {
         DecodedJWT decodedJWT = verify(token);
         if (decodedJWT != null) {
             return decodedJWT.getExpiresAt();
         }
         return new Date();
-    }
-
-    public boolean isRefreshTokenExpired(LocalDateTime expiryDate) {
-        return expiryDate.isBefore(LocalDateTime.now());
     }
 }

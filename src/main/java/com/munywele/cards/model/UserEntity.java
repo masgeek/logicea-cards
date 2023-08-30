@@ -2,6 +2,8 @@ package com.munywele.cards.model;
 
 import com.munywele.cards.enums.EnumUserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +18,30 @@ public class UserEntity {
     @Column(name = "user_email", nullable = false, length = 50)
     private String userEmail;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
+
+    @Size(max = 80)
+    @Column(name = "last_name", length = 80)
+    private String lastName;
+
+
     @Column(name = "user_role", columnDefinition = "TEXT", nullable = false, length = 11)
     @Enumerated(EnumType.STRING)
     private EnumUserRole userRole;
 
     @Column(name = "user_password", nullable = false, length = 200)
     private String userPassword;
+
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
 
     public Long getId() {
         return id;
@@ -37,6 +57,22 @@ public class UserEntity {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public EnumUserRole getUserRole() {
@@ -70,12 +106,4 @@ public class UserEntity {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-
 }

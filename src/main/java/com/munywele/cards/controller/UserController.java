@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<LoginResponse> authUser(@Valid @RequestBody LoginRequest userRequest, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> authUser(@Valid @RequestBody LoginRequest userRequest) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
 
