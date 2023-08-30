@@ -31,8 +31,17 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+  show-actuator: true
+
+
 cards:
   time-zone: ${APP_TIMEZONE:+03:00}
+  version: 1.0.0
+  name: Cards Management API
+  dev-email: dev@logicea.com
+  company: Logicea
+  doc-site: #
+  license: GPL
 
 jwt:
   secret: ${JWT_SECRET:changeme}
