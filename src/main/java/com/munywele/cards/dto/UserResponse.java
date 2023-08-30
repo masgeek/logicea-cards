@@ -6,7 +6,7 @@ import com.munywele.cards.enums.EnumUserRole;
 import java.time.LocalDateTime;
 
 @SuppressWarnings("unused")
-public class UserDto {
+public class UserResponse {
     private String fullNames;
     private String userEmail;
     private EnumUserRole userRole;

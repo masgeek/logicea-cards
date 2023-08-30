@@ -1,7 +1,7 @@
 package com.munywele.cards.service;
 
 import com.munywele.cards.dto.LoginResponse;
-import com.munywele.cards.dto.UserDto;
+import com.munywele.cards.dto.UserResponse;
 import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.repository.UserRepository;
 import com.munywele.cards.utils.JwtUtils;
@@ -43,15 +43,15 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<UserDto> getUsers() {
+    public List<UserResponse> getUsers() {
         List<UserEntity> users = userRepo.findAll();
 
-        List<UserDto> userDtoList = new ArrayList<>();
+        List<UserResponse> userResponseList = new ArrayList<>();
         for (UserEntity user : users) {
-            UserDto userDto = modelMapper.map(user, UserDto.class);
-            userDtoList.add(userDto);
+            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+            userResponseList.add(userResponse);
         }
-        return userDtoList;
+        return userResponseList;
     }
 
     @Override

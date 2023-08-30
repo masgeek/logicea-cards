@@ -45,5 +45,5 @@ cards:
 
 jwt:
   secret: ${JWT_SECRET:changeme}
-  token-validity: ${JWT_SECONDS_DURATION:60} #validity in seconds
+  token-validity: ${JWT_SECONDS_DURATION:18000} #validity in seconds
   issuer: ${JWT_ISSUER:cards}

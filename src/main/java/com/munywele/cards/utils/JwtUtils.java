@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.munywele.cards.enums.EnumJwtClaims;
 import com.munywele.cards.model.UserEntity;
@@ -48,33 +49,32 @@ public class JwtUtils {
         Date expirationDate = computeDate(tokenValidity);
         Date notBeforeDate = computeDate(0L);
 
-        return JWT.create()
-                .withSubject("Card user details")
-                .withClaim(EnumJwtClaims.USERNAME.name(), userEntity.getUserEmail())
-                .withClaim(EnumJwtClaims.ROLE.name(), userEntity.getUserRole().getRoleName())
-                .withClaim(EnumJwtClaims.USER_ID.name(), userEntity.getId())
-                .withIssuer(issuer)
-                .withJWTId(UUID.randomUUID().toString())
-                .withAudience(userEntity.getUserEmail())
-                .withExpiresAt(expirationDate)
-                .withNotBefore(notBeforeDate)
-                .withIssuedAt(new Date())
-                .sign(algorithm);
+        return JWT.create().withSubject("Card user details").withClaim(EnumJwtClaims.USERNAME.name(), userEntity.getUserEmail()).withClaim(EnumJwtClaims.ROLE.name(), userEntity.getUserRole().getRoleName()).withClaim(EnumJwtClaims.USER_ID.name(), userEntity.getId()).withIssuer(issuer).withJWTId(UUID.randomUUID().toString()).withAudience(userEntity.getUserEmail()).withExpiresAt(expirationDate).withNotBefore(notBeforeDate).withIssuedAt(new Date()).sign(algorithm);
     }
 
     public boolean validateToken(HttpServletRequest request, UserDetails user) {
         String username = getUsernameFromToken(request);
 
-        return Objects.equals(username, user.getUsername()) && !isTokenExpired(parseJwt(request));
+        return Objects.equals(username, user.getUsername()) && !isTokenExpired(parseJwtFromHeader(request));
     }
 
 
     public DecodedJWT decodeToken(HttpServletRequest request) {
-        String jwt = parseJwt(request);
+        String jwt = parseJwtFromHeader(request);
         if (jwt != null) {
             return verify(jwt);
         }
         return null;
+    }
+
+
+    public Claim getClaim(String jwtToken, EnumJwtClaims claimName) {
+        DecodedJWT decoded = decodeToken(jwtToken);
+        return decoded.getClaim(claimName.name());
+    }
+
+    private DecodedJWT decodeToken(String jwtToken) {
+        return JWT.decode(jwtToken);
     }
 
 
@@ -89,7 +89,7 @@ public class JwtUtils {
         }
     }
 
-    private String parseJwt(HttpServletRequest request) {
+    public String parseJwtFromHeader(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7, headerAuth.length());
@@ -104,7 +104,7 @@ public class JwtUtils {
 
 
     private String getUsernameFromToken(HttpServletRequest request) {
-        String token = parseJwt(request);
+        String token = parseJwtFromHeader(request);
         DecodedJWT decodedJWT = verify(token);
         if (decodedJWT != null) {
             return decodedJWT.getClaim(EnumJwtClaims.USERNAME.name()).asString();
