@@ -3,23 +3,25 @@ package com.munywele.cards.service;
 import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
 import com.munywele.cards.dto.CardResponse;
-import com.munywele.cards.dto.UserResponse;
 import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.enums.EnumJwtClaims;
 import com.munywele.cards.enums.EnumUserRole;
 import com.munywele.cards.model.CardEntity;
-import com.munywele.cards.model.UserEntity;
 import com.munywele.cards.repository.CardRepository;
 import com.munywele.cards.repository.UserRepository;
 import com.munywele.cards.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class CardService {
@@ -50,12 +52,15 @@ public class CardService {
         return modelMapper.map(saved, CardResponse.class);
     }
 
-    public Page<CardResponse> listAllCards(Pageable pageable, HttpServletRequest request) {
-        Page<CardEntity> cardEntities = null;
+    public Page<CardResponse> listAllCards(int page, int size, String sortField, String sortOrder, HttpServletRequest request) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<CardEntity> cardEntities;
         //check user role
         String jwtToken = jwtUtils.parseJwtFromHeader(request);
         Long userid = getAuthenticatedUserId(request);
         String role = jwtUtils.getClaim(jwtToken, EnumJwtClaims.ROLE).asString();
+
 
         if (Objects.equals(role, EnumUserRole.MEMBER.getRoleName())) {
             //filter out cards using the user id
@@ -64,7 +69,6 @@ public class CardService {
             cardEntities = cardRepo.findAll(pageable);
         }
         return cardEntities.map(this::convertToCardResponse);
-
     }
 
     public CardResponse addCard(NewCardRequest newCardRequest, HttpServletRequest request) {

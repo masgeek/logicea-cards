@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api/v1/cards")
@@ -39,8 +40,14 @@ public class CardController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
-    public ResponseEntity<Page<CardResponse>> listCards(Pageable pageable, HttpServletRequest request) {
-        Page<CardResponse> cardResponses = cardService.listAllCards(pageable, request);
+    public ResponseEntity<Page<CardResponse>> listCards(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "cardName") String sortField,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            HttpServletRequest request) {
+
+        Page<CardResponse> cardResponses = cardService.listAllCards(page, size, sortField, sortOrder, request);
         return ResponseEntity.ok(cardResponses);
     }
 
