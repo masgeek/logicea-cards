@@ -12,11 +12,8 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk-role-user-id"
-                             referencedColumnNames="id"
-                             referencedTableName="users"
-                             deleteCascade="false"/>
+            <column name="user_email" type="varchar(50)">
+                <constraints nullable="false"/>
             </column>
 
             <column name="token" type="varchar(200)">

@@ -25,7 +25,7 @@
 
             <column name="card_color" type="varchar(8)"/>
 
-            <column name="card_status" type="varchar(15)" defaultValue="To Do">
+            <column name="card_status" type="varchar(15)" defaultValue="TODO">
                 <constraints nullable="false"/>
             </column>
 
@@ -36,7 +36,7 @@
 
         </createTable>
 
-        <modifySql >
+        <modifySql>
             <append value=" engine innodb charset=utf8mb4 collate utf8mb4_unicode_ci"/>
         </modifySql>
 
