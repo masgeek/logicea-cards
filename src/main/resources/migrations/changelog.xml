@@ -9,8 +9,5 @@
     <include file="changelog/29-03-create-user-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/29-03-insert-into-user-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/29-04-add-user-role-fk-to-users-table.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/29-05-create-user-tokens-table.xml" relativeToChangelogFile="true"/>
-
-    <include file="changelog/30-01-add-user-email-fk-to-user-tokens-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
