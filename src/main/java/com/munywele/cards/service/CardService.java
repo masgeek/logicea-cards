@@ -56,15 +56,7 @@ public class CardService {
         return modelMapper.map(saved, CardResponse.class);
     }
 
-    public Page<CardResponse> listAllCards(
-            int pageNumber, int pageSize,
-            String cardName,
-            String cardColor,
-            EnumCardStatus cardStatus,
-            String createdAt,
-            String sortField,
-            String sortOrder,
-            HttpServletRequest request) {
+    public Page<CardResponse> listAllCards(int pageNumber, int pageSize, String cardName, String cardColor, EnumCardStatus cardStatus, String createdAt, String sortField, String sortOrder, HttpServletRequest request) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
@@ -76,20 +68,10 @@ public class CardService {
 
         LocalDateTime startDate = jwtUtils.convertToLocalDateViaInstant(createdAt);
 
-        cardEntities = cardRepo.searchCards(
-//                userId,
-                cardName,
-                cardColor,
-                cardStatus,
-                startDate,
-                pageable);
-
-
-        if (Objects.equals(role, EnumUserRole.MEMBER.getRoleName())) {
-            //filter out cards using the user id
-//            cardEntities = cardRepo.findAllByUserId(userId, pageable);
+        if (Objects.equals(role, EnumUserRole.ADMIN.getRoleName())) {
+            cardEntities = cardRepo.searchCards(cardName, cardColor, cardStatus, startDate, pageable);
         } else {
-//            cardEntities = cardRepo.findAll(pageable);
+            cardEntities = cardRepo.searchCards(userId, cardName, cardColor, cardStatus, startDate, pageable);
         }
         return cardEntities.map(this::convertToCardResponse);
     }

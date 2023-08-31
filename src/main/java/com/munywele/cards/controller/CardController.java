@@ -47,7 +47,7 @@ public class CardController {
             @RequestParam(required = false) String cardName,
             @RequestParam(required = false) String cardColor,
             @RequestParam(required = false) EnumCardStatus cardStatus,
-            @RequestParam(required = false) String createdAt,
+            @RequestParam(required = false)  String createdAt,
             @RequestParam(defaultValue = "cardName") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder,
             HttpServletRequest request) {
