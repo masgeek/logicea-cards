@@ -11,6 +11,7 @@ import com.munywele.cards.repository.CardRepository;
 import com.munywele.cards.repository.UserRepository;
 import com.munywele.cards.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,21 +56,40 @@ public class CardService {
         return modelMapper.map(saved, CardResponse.class);
     }
 
-    public Page<CardResponse> listAllCards(int page, int size, String sortField, String sortOrder, HttpServletRequest request) {
+    public Page<CardResponse> listAllCards(
+            int pageNumber, int pageSize,
+            String cardName,
+            String cardColor,
+            EnumCardStatus cardStatus,
+            String createdAt,
+            String sortField,
+            String sortOrder,
+            HttpServletRequest request) {
+
         Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<CardEntity> cardEntities;
         //check user role
         String jwtToken = jwtUtils.parseJwtFromHeader(request);
-        Long userid = getAuthenticatedUserId(request);
+        Long userId = getAuthenticatedUserId(request);
         String role = jwtUtils.getClaim(jwtToken, EnumJwtClaims.ROLE).asString();
+
+        LocalDateTime startDate = jwtUtils.convertToLocalDateViaInstant(createdAt);
+
+        cardEntities = cardRepo.searchCards(
+//                userId,
+                cardName,
+                cardColor,
+                cardStatus,
+                startDate,
+                pageable);
 
 
         if (Objects.equals(role, EnumUserRole.MEMBER.getRoleName())) {
             //filter out cards using the user id
-            cardEntities = cardRepo.findAllByUserId(userid, pageable);
+//            cardEntities = cardRepo.findAllByUserId(userId, pageable);
         } else {
-            cardEntities = cardRepo.findAll(pageable);
+//            cardEntities = cardRepo.findAll(pageable);
         }
         return cardEntities.map(this::convertToCardResponse);
     }

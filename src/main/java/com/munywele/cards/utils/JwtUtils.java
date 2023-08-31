@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Component
-public class JwtUtils {
+public class JwtUtils extends MyDateUtils {
     private final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${cards.time-zone}")

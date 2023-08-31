@@ -3,16 +3,17 @@ package com.munywele.cards.controller;
 import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
 import com.munywele.cards.dto.CardResponse;
+import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.service.CardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RequestMapping("api/v1/cards")
 @RestController
@@ -41,13 +42,27 @@ public class CardController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
     public ResponseEntity<Page<CardResponse>> listCards(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "50") int pageSize,
+            @RequestParam(required = false) String cardName,
+            @RequestParam(required = false) String cardColor,
+            @RequestParam(required = false) EnumCardStatus cardStatus,
+            @RequestParam(required = false) String createdAt,
             @RequestParam(defaultValue = "cardName") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder,
             HttpServletRequest request) {
 
-        Page<CardResponse> cardResponses = cardService.listAllCards(page, size, sortField, sortOrder, request);
+        Page<CardResponse> cardResponses = cardService.listAllCards(
+                pageNumber,
+                pageSize,
+                cardName,
+                cardColor,
+                cardStatus,
+                createdAt,
+                sortField,
+                sortOrder,
+                request);
+
         return ResponseEntity.ok(cardResponses);
     }
 
