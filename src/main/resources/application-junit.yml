@@ -1,14 +1,11 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    url: ${DB_URL:jdbc:mysql://localhost:3306/cards}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:}
 
   liquibase:
-    enabled: true
+    enabled: false
     change-log: "classpath:/migrations/changelog.xml"
     database-change-log-table: cards_migration
     database-change-log-lock-table: cards_migration_lock
