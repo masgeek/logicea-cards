@@ -139,7 +139,7 @@ To generate the artifact for deployment, launch your terminal with the project d
 ```
 This generates a .jar file that will be found under the **build/libs** directory, the Dockerfile will reference it from there.
 
-The next step is to build the docker image  using this command `docker build -t logicea .` this will generate a docker image called **logiceea**
+The next step is to build the docker image  using this command `docker build -t logic-ea .` this will generate a docker image called **logic-ea**
 
 
 ## Known issues
@@ -148,9 +148,9 @@ The next step is to build the docker image  using this command `docker build -t 
 
 ## Additional documentation
 
-For openAPI endpoint definition you can acces it via two methos
+For openAPI endpoint definition you can access it via two methods
 
-- Launch the pplication then in the browser use the following url http://localhost:8080/swagger-ui/index.html
+- Launch the application then in the browser use the following url http://localhost:8080/swagger-ui/index.html
 - 
 - View the archived version at https://app.swaggerhub.com/apis/masgeek/cards-management_api/1.0.0
 
