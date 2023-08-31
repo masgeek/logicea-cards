@@ -25,6 +25,9 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/cards}
     username: ${DB_USER:root}
     password: ${DB_PASS:}
+  h2:
+    console:
+      enabled: false
 
   liquibase:
     enabled: false

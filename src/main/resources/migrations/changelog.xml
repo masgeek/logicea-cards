@@ -10,4 +10,6 @@
     <include file="changelog/29-03-insert-into-user-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/29-04-add-user-role-fk-to-users-table.xml" relativeToChangelogFile="true"/>
 
+    <include file="changelog/31-01-insert-test-user.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
