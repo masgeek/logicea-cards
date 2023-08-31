@@ -124,4 +124,9 @@ public class JwtUtils extends MyDateUtils {
         }
         return new Date();
     }
+
+    public Long getAuthenticatedUserId(HttpServletRequest request) {
+        String jwtToken = parseJwtFromHeader(request);
+        return getClaim(jwtToken, EnumJwtClaims.USER_ID).asLong();
+    }
 }

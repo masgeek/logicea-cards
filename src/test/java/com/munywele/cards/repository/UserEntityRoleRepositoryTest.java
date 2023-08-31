@@ -24,7 +24,7 @@ class UserEntityRoleRepositoryTest {
     private UserRoleRepository repo;
 
     @Test
-    public void testCreateRoles() {
+    void testCreateRoles() {
         UserRoleEntity admin = new UserRoleEntity();
         admin.setRoleName(EnumUserRole.ADMIN);
 
