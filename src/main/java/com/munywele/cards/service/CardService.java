@@ -1,0 +1,89 @@
+package com.munywele.cards.service;
+
+import com.munywele.cards.dto.CardResponse;
+import com.munywele.cards.dto.CardUpdateRequest;
+import com.munywele.cards.dto.NewCardRequest;
+import com.munywele.cards.enums.EnumCardStatus;
+import com.munywele.cards.enums.EnumJwtClaims;
+import com.munywele.cards.enums.EnumUserRole;
+import com.munywele.cards.model.CardEntity;
+import com.munywele.cards.repository.CardRepository;
+import com.munywele.cards.repository.UserRepository;
+import com.munywele.cards.utils.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Service
+public class CardService {
+
+    private final CardRepository cardRepo;
+    private final UserRepository userRepo;
+    ModelMapper modelMapper = new ModelMapper();
+
+    public CardService(CardRepository cardRepo, UserRepository userRepo) {
+        this.cardRepo = cardRepo;
+        this.userRepo = userRepo;
+    }
+
+    public CardResponse getSingleCard(Long cardId, Long userId) throws Exception {
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userId).orElseThrow(() -> new Exception("Card not found"));
+        return modelMapper.map(card, CardResponse.class);
+    }
+
+    public CardResponse updateCard(Long cardId, CardUpdateRequest cardUpdateRequest, Long userId) throws Exception {
+
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userId).orElseThrow(() -> new Exception("Card not found"));
+        modelMapper.map(cardUpdateRequest, card);
+        CardEntity saved = cardRepo.save(card);
+        return modelMapper.map(saved, CardResponse.class);
+    }
+
+    public Page<CardResponse> listAllCards(
+            Long userId, String role, int pageNumber, int pageSize,
+            String cardName, String cardColor, EnumCardStatus cardStatus,
+            LocalDateTime startDate, String sortField, String sortOrder) {
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortField);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<CardEntity> cardEntities;
+
+        if (Objects.equals(role, EnumUserRole.ADMIN.getRoleName())) {
+            cardEntities = cardRepo.searchCards(cardName, cardColor, cardStatus, startDate, pageable);
+        } else {
+            cardEntities = cardRepo.searchCards(userId, cardName, cardColor, cardStatus, startDate, pageable);
+        }
+        return cardEntities.map(this::convertToCardResponse);
+    }
+
+    public CardResponse addCard(NewCardRequest newCardRequest, Long userId) {
+
+        CardEntity cardEntity = modelMapper.map(newCardRequest, CardEntity.class);
+
+        cardEntity.setUserId(userId);
+
+        cardEntity.setCardStatus(EnumCardStatus.TODO);
+
+        CardEntity savedCard = cardRepo.save(cardEntity);
+
+        return modelMapper.map(savedCard, CardResponse.class);
+    }
+
+    public void deleteCard(Long cardId, Long userId) throws Exception {
+        CardEntity card = cardRepo.findByIdAndUserId(cardId, userId).orElseThrow(() -> new Exception("Card not found"));
+        cardRepo.delete(card);
+    }
+
+
+    private CardResponse convertToCardResponse(CardEntity cardEntity) {
+        return modelMapper.map(cardEntity, CardResponse.class);
+    }
+
+}
