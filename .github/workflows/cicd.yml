@@ -2,11 +2,6 @@ name: CI/CD with Gradle and Java 17
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
