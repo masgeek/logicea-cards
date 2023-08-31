@@ -2,12 +2,8 @@ package com.munywele.cards.validators;
 
 import com.munywele.cards.utils.ColorValidator;
 import com.munywele.cards.validators.annotations.ValidHexColor;
-import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.Payload;
-
-import java.lang.annotation.*;
 
 
 public class HexColorValidator implements ConstraintValidator<ValidHexColor, String> {
