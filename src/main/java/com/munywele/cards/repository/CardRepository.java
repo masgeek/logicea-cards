@@ -19,7 +19,7 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
     @Query("SELECT c FROM CardEntity c WHERE " +
             "(c.userId = :userId) " +
             "AND (:cardName IS NULL OR c.cardName LIKE %:cardName%) " +
-            "AND (:cardColor IS NULL OR c.cardColor = :cardColor) " +
+            "AND (:cardColor IS NULL OR c.cardColor LIKE %:cardColor%) " +
             "AND (:cardStatus IS NULL OR c.cardStatus = :cardStatus) " +
             "AND (:createdAt IS NULL OR c.createdAt >= :createdAt)")
     Page<CardEntity> searchCards(
@@ -33,7 +33,7 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
 
     @Query("SELECT c FROM CardEntity c WHERE " +
             "(:cardName IS NULL OR c.cardName LIKE %:cardName%) " +
-            "AND (:cardColor IS NULL OR c.cardColor = :cardColor) " +
+            "AND (:cardColor IS NULL OR c.cardColor LIKE %:cardColor%) " +
             "AND (:cardStatus IS NULL OR c.cardStatus = :cardStatus) " +
             "AND (:createdAt IS NULL OR c.createdAt >= :createdAt)")
     Page<CardEntity> searchCards(
