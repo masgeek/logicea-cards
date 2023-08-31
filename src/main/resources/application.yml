@@ -17,6 +17,7 @@ spring:
     name: cards-api-service
 
   jpa:
+    database: mysql
     open-in-view: false
     hibernate:
       ddl-auto: validate
