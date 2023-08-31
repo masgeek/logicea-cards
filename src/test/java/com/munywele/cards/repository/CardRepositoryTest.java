@@ -2,6 +2,7 @@ package com.munywele.cards.repository;
 
 import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.dto.CardUpdateRequest;
+import com.munywele.cards.dto.NewCardRequest;
 import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.model.CardEntity;
 import com.munywele.cards.service.CardService;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import static org.mockito.ArgumentMatchers.any;
 
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -29,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 //@DataJpaTest
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@ActiveProfiles("junit")
+@ActiveProfiles("junit")
 //@Rollback(false)
 @ExtendWith(MockitoExtension.class)
 class CardRepositoryTest {
@@ -41,10 +43,26 @@ class CardRepositoryTest {
     private CardService itemService;
 
     @Test
+    void testInsertItem() {
+        NewCardRequest updatedItem = new NewCardRequest();
+        updatedItem.setCardName("Test");
+
+        // Perform the update
+        CardResponse result = itemService.addCard(updatedItem, 1L);
+
+        // Verify that the repository methods were called
+        verify(itemRepository, times(1)).save(any(CardEntity.class));
+
+        // Assert the result
+        assertNotNull(result);
+        assertEquals(updatedItem.getCardName(), result.getCardName());
+        assertEquals(updatedItem.getCardName(), result.getCardName());
+    }
+
     void testUpdateItem() throws Exception {
         // Create a sample item
         CardEntity card = new CardEntity();
-        card.setId(3L);
+        card.setId(1L);
 
 
         // Mock the behavior of the repository
@@ -57,7 +75,7 @@ class CardRepositoryTest {
         updatedItem.setCardStatus(EnumCardStatus.TODO);
 
         // Perform the update
-        CardResponse result = itemService.updateCard(1L, updatedItem, 1L);
+        CardResponse result = itemService.updateCard(1L, updatedItem, 3L);
 
         // Verify that the repository methods were called
         verify(itemRepository, times(1)).findById(card.getId());
