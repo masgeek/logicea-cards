@@ -6,6 +6,10 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * The MyDateUtils class provides methods to convert a date string or a Date object to a LocalDateTime
+ * object.
+ */
 public class MyDateUtils {
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);

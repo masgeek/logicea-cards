@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @Component
+/**
+ * The AuthEntryPoint class is an implementation of the AuthenticationEntryPoint interface in Java.
+ */
 public class AuthEntryPoint implements AuthenticationEntryPoint {
     private final Logger logger = LoggerFactory.getLogger(AuthEntryPoint.class);
 

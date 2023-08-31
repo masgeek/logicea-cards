@@ -25,6 +25,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Component
+/**
+ * The JwtUtils class extends the MyDateUtils class.
+ */
 public class JwtUtils extends MyDateUtils {
     private final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
