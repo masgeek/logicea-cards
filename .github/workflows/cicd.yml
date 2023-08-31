@@ -12,6 +12,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Make Gradle file executable
+        run: chmod +x ./gradlew
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: 'build'
@@ -24,6 +26,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Make Gradle file executable
+        run: chmod +x ./gradlew
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: 'test'
@@ -37,6 +41,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Make Gradle file executable
+        run: chmod +x ./gradlew
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: 'deploy'
