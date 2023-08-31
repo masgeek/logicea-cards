@@ -1,8 +1,8 @@
 package com.munywele.cards.controller;
 
+import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
-import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.service.CardService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 @RequestMapping("api/v1/cards")
 @RestController

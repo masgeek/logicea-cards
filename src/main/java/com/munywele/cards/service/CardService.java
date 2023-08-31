@@ -1,8 +1,8 @@
 package com.munywele.cards.service;
 
+import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.dto.CardUpdateRequest;
 import com.munywele.cards.dto.NewCardRequest;
-import com.munywele.cards.dto.CardResponse;
 import com.munywele.cards.enums.EnumCardStatus;
 import com.munywele.cards.enums.EnumJwtClaims;
 import com.munywele.cards.enums.EnumUserRole;
@@ -11,20 +11,14 @@ import com.munywele.cards.repository.CardRepository;
 import com.munywele.cards.repository.UserRepository;
 import com.munywele.cards.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.time.DateUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Service

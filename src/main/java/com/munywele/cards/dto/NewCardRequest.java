@@ -2,7 +2,6 @@ package com.munywele.cards.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.munywele.cards.validators.annotations.ValidHexColor;
-import jakarta.validation.constraints.NotNull;
 
 public class NewCardRequest {
     @JsonProperty("name")
