@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+/**
+ * The UserService class implements the UserDetailsService interface.
+ */
 public class UserService implements UserDetailsService {
 
     @Value("${cards.time-zone}")
@@ -43,6 +46,12 @@ public class UserService implements UserDetailsService {
     }
 
 
+    /**
+     * The function retrieves a list of users from a repository and maps them to a list of user
+     * responses using a model mapper.
+     * 
+     * @return The method is returning a List of UserResponse objects.
+     */
     public List<UserResponse> getUsers() {
         List<UserEntity> users = userRepo.findAll();
 
@@ -55,6 +64,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    // The `loadUserByUsername` method is part of the `UserDetailsService` interface implementation in
+    // the `UserService` class. It is responsible for loading a user's details based on their username.
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username == null) {
             throw new UsernameNotFoundException("Username not found");
@@ -67,6 +78,18 @@ public class UserService implements UserDetailsService {
         return new UserDetailsImpl(user.getId().toString(), user.getUserEmail(), user.getUserPassword(), authorities);
     }
 
+    /**
+     * The function authUser takes an Authentication object, sets it as the current authentication in
+     * the SecurityContextHolder, retrieves the UserDetails from the authentication object, finds the
+     * corresponding UserEntity in the userRepo, creates a JWT token using jwtUtils, and returns a
+     * LoginResponse object containing the JWT token.
+     * 
+     * @param authentication The authentication parameter is an object of type Authentication, which
+     * represents the authentication request made by the user. It contains information such as the
+     * user's credentials (username and password) and any additional details required for
+     * authentication.
+     * @return The method is returning a LoginResponse object.
+     */
     public LoginResponse authUser(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
