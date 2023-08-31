@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="31-01" author="masgeek">
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="user_email" value="test@gmail.com"/>
+            <column name="first_name" value="Test"/>
+            <column name="last_name" value="User"/>
+            <column name="user_password" value="$2a$10$eAmKyH0ssFnORcJmgCqIk.ay5WUOVQ70/lsBZI8GLorVTMfzVrPkW"/>
+            <column name="user_role" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" value="2"/>
+            <column name="user_email" value="member@gmail.com"/>
+            <column name="first_name" value="Member"/>
+            <column name="last_name" value="User"/>
+            <column name="user_password" value="$2a$10$eAmKyH0ssFnORcJmgCqIk.ay5WUOVQ70/lsBZI8GLorVTMfzVrPkW"/>
+            <column name="user_role" value="MEMBER"/>
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+</databaseChangeLog>
