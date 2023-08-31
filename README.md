@@ -112,7 +112,7 @@ Sortable fields are:
 ``` yaml
   cardName
   cardColor
-  cardStatuS
+  cardStatus
   createdAt
   updatedAt
 ```
@@ -126,7 +126,7 @@ Filter fields are:
 ``` yaml
   cardName -  wildcard search
   cardColor - wildcard search
-  cardStatuS
+  cardStatus
   createdAt
 ```
 
