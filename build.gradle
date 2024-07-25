@@ -27,7 +27,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
-    implementation 'org.modelmapper:modelmapper:3.1.1'
+    implementation 'org.modelmapper:modelmapper:3.2.1'
 
     // Used for creating tokens
     implementation 'com.auth0:java-jwt:3.19.4'
